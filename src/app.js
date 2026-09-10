@@ -1,9 +1,7 @@
-
 import {
     initializeApp
 } from
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-
 
 import {
     getDatabase,
@@ -13,8 +11,9 @@ import {
 "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
 
 
-
-/* FIREBASE CONFIGURATION */
+/* ===============================
+   FIREBASE CONFIGURATION
+================================ */
 
 const firebaseConfig = {
 
@@ -42,93 +41,71 @@ const firebaseConfig = {
 };
 
 
-/* INITIALIZE FIREBASE */
+/* ===============================
+   INITIALIZE FIREBASE
+================================ */
 
-const app =
-initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
 
-
-const database =
-getDatabase(app);
-
+const database = getDatabase(app);
 
 
-/* VOICE CONTROL */
+/* ===============================
+   VOICE CONTROL
+================================ */
 
 let voiceEnabled = true;
 
-
 const voiceButton =
-document.getElementById(
-    "voiceButton"
-);
+document.getElementById("voiceButton");
 
 
-voiceButton.addEventListener(
-    "click",
+voiceButton.addEventListener("click", () => {
 
-    () => {
+    voiceEnabled = !voiceEnabled;
 
-        voiceEnabled =
-        !voiceEnabled;
+    if (voiceEnabled) {
 
+        voiceButton.innerHTML =
+        "🔊 Voice ON";
 
-        if (voiceEnabled) {
+    } else {
 
-            voiceButton.innerHTML =
-            "🔊 Voice ON";
-
-        }
-
-        else {
-
-            voiceButton.innerHTML =
-            "🔇 Voice OFF";
-
-        }
+        voiceButton.innerHTML =
+        "🔇 Voice OFF";
 
     }
 
-);
+});
 
 
-
-/* SPEAK FUNCTION */
+/* ===============================
+   SPEAK FUNCTION
+================================ */
 
 function speak(message) {
 
-    if (!voiceEnabled)
-    return;
+    if (!voiceEnabled) return;
 
-
-    if (
-        "speechSynthesis"
-        in window
-    ) {
+    if ("speechSynthesis" in window) {
 
         speechSynthesis.cancel();
 
-
         const speech =
-        new SpeechSynthesisUtterance(
-            message
-        );
-
+        new SpeechSynthesisUtterance(message);
 
         speech.rate = 0.9;
 
-
-        speechSynthesis.speak(
-            speech
-        );
+        speechSynthesis.speak(speech);
 
     }
 
 }
 
 
-
-/* WATER STATUS */
+/* ===============================
+   WATER STATUS
+================================ */
 
 function getStatus(level) {
 
@@ -136,73 +113,52 @@ function getStatus(level) {
 
         return {
 
-            text:
-            "🔴 LOW WATER",
-
-            className:
-            "danger-status",
-
-            alert:
-            true
+            text: "🔴 LOW WATER",
+            className: "danger-status",
+            alert: true
 
         };
 
     }
-
 
     if (level <= 60) {
 
         return {
 
-            text:
-            "🟡 WARNING",
-
-            className:
-            "warning-status",
-
-            alert:
-            false
+            text: "🟡 WARNING",
+            className: "warning-status",
+            alert: false
 
         };
 
     }
 
-
     return {
 
-        text:
-        "🟢 SAFE",
-
-        className:
-        "safe-status",
-
-        alert:
-        false
+        text: "🟢 SAFE",
+        className: "safe-status",
+        alert: false
 
     };
 
 }
 
 
+/* ===============================
+   UPDATE TANK
+================================ */
 
-/* UPDATE TANK */
-
-function updateTank(
-    tankNumber,
-    level
-) {
+function updateTank(tankNumber, level) {
 
     const water =
     document.getElementById(
         "water" + tankNumber
     );
 
-
     const percent =
     document.getElementById(
         "percent" + tankNumber
     );
-
 
     const statusElement =
     document.getElementById(
@@ -210,25 +166,35 @@ function updateTank(
     );
 
 
-    water.style.height =
-    level + "%";
+    if (water) {
+
+        water.style.height =
+        level + "%";
+
+    }
 
 
-    percent.innerText =
-    level + "%";
+    if (percent) {
+
+        percent.innerText =
+        level.toFixed(1) + "%";
+
+    }
 
 
     const status =
     getStatus(level);
 
 
-    statusElement.innerText =
-    status.text;
+    if (statusElement) {
 
+        statusElement.innerText =
+        status.text;
 
-    statusElement.className =
-    "status " +
-    status.className;
+        statusElement.className =
+        "status " + status.className;
+
+    }
 
 
     return status;
@@ -236,109 +202,67 @@ function updateTank(
 }
 
 
+/* ===============================
+   WATER HISTORY CHART
+================================ */
 
-/* CHART */
+const chartElement =
+document.getElementById("waterChart");
+
 
 const chartContext =
-document
-.getElementById(
-    "waterChart"
-)
-.getContext("2d");
+chartElement.getContext("2d");
 
 
 const waterChart =
-new Chart(
-    chartContext,
+new Chart(chartContext, {
 
-    {
+    type: "line",
 
-        type:
-        "line",
+    data: {
 
+        labels: [],
 
-        data: {
+        datasets: [
 
-            labels: [],
+            {
 
+                label: "Tank 1",
 
-            datasets: [
+                data: [],
 
-                {
+                tension: 0.4
 
-                    label:
-                    "Tank 1",
+            },
 
-                    data: [],
+            {
 
-                    tension:
-                    0.4
+                label: "Tank 2",
 
-                },
+                data: [],
 
+                tension: 0.4
 
-                {
+            }
 
-                    label:
-                    "Tank 2",
+        ]
 
-                    data: [],
-
-                    tension:
-                    0.4
-
-                },
+    },
 
 
-                {
+    options: {
 
-                    label:
-                    "Tank 3",
+        responsive: true,
 
-                    data: [],
+        animation: true,
 
-                    tension:
-                    0.4
+        scales: {
 
-                },
+            y: {
 
+                min: 0,
 
-                {
-
-                    label:
-                    "Tank 4",
-
-                    data: [],
-
-                    tension:
-                    0.4
-
-                }
-
-            ]
-
-        },
-
-
-        options: {
-
-            responsive:
-            true,
-
-
-            animation:
-            true,
-
-
-            scales: {
-
-                y: {
-
-                    min: 0,
-
-                    max: 100
-
-                }
+                max: 100
 
             }
 
@@ -346,65 +270,45 @@ new Chart(
 
     }
 
-);
+});
 
 
+/* ===============================
+   ADD HISTORY
+================================ */
 
-/* ADD HISTORY */
-
-function addHistory(
-    levels
-) {
+function addHistory(level1, level2) {
 
     const time =
-    new Date()
-    .toLocaleTimeString();
+    new Date().toLocaleTimeString();
 
 
-    waterChart.data.labels.push(
-        time
-    );
+    waterChart.data.labels.push(time);
 
 
     waterChart.data.datasets[0]
-    .data.push(
-        levels[0]
-    );
+    .data.push(level1);
 
 
     waterChart.data.datasets[1]
-    .data.push(
-        levels[1]
-    );
+    .data.push(level2);
 
 
-    waterChart.data.datasets[2]
-    .data.push(
-        levels[2]
-    );
-
-
-    waterChart.data.datasets[3]
-    .data.push(
-        levels[3]
-    );
-
+    /* Keep only last 10 readings */
 
     if (
-        waterChart.data.labels.length
-        > 10
+        waterChart.data.labels.length > 10
     ) {
 
         waterChart.data.labels.shift();
 
 
         waterChart.data.datasets
-        .forEach(
+        .forEach(dataset => {
 
-            dataset =>
-            dataset.data.shift()
+            dataset.data.shift();
 
-        );
+        });
 
     }
 
@@ -414,19 +318,21 @@ function addHistory(
 }
 
 
-
-/* PREVIOUS ALERT STATUS */
+/* ===============================
+   PREVIOUS STATUS
+================================ */
 
 let previousStatus = [
-    "",
-    "",
+
     "",
     ""
+
 ];
 
 
-
-/* READ FIREBASE DATA */
+/* ===============================
+   FIREBASE DATABASE REFERENCE
+================================ */
 
 const waterRef =
 ref(
@@ -435,6 +341,9 @@ ref(
 );
 
 
+/* ===============================
+   READ REAL-TIME FIREBASE DATA
+================================ */
 
 onValue(
 
@@ -446,135 +355,102 @@ onValue(
         snapshot.val();
 
 
+        /* No sensor data */
+
         if (!data) {
 
             document
-            .getElementById(
-                "connectionText"
-            )
+            .getElementById("connectionText")
             .innerText =
             "Waiting for sensor";
-
 
             return;
 
         }
 
 
-        const levels = [
+        /* ===========================
+           READ TWO TANKS
+        =========================== */
 
-            Number(
-                data.tank1 || 0
-            ),
+        const tank1Level =
+        Number(data.tank1 || 0);
 
-            Number(
-                data.tank2 || 0
-            ),
 
-            Number(
-                data.tank3 || 0
-            ),
+        const tank2Level =
+        Number(data.tank2 || 0);
 
-            Number(
-                data.tank4 || 0
-            )
 
-        ];
-
+        /* Firebase Connected */
 
         document
-        .getElementById(
-            "connectionDot"
-        )
+        .getElementById("connectionDot")
         .style.background =
         "green";
 
 
         document
-        .getElementById(
-            "connectionText"
-        )
+        .getElementById("connectionText")
         .innerText =
         "Firebase Connected";
 
 
-        const alerts = [];
+        /* ===========================
+           UPDATE TANK 1
+        =========================== */
+
+        const status1 =
+        updateTank(
+
+            1,
+
+            tank1Level
+
+        );
 
 
-        levels.forEach(
+        /* ===========================
+           UPDATE TANK 2
+        =========================== */
 
-            (level,index) => {
+        const status2 =
+        updateTank(
 
+            2,
 
-                const tankNumber =
-                index + 1;
+            tank2Level
 
-
-                const status =
-                updateTank(
-                    tankNumber,
-                    level
-                );
+        );
 
 
-                if (
-                    previousStatus[index]
-                    !==
-                    status.text
-                ) {
+        /* ===========================
+           VOICE ALERT - TANK 1
+        =========================== */
 
+        if (
 
-                    if (
-                        previousStatus[index]
-                        !== ""
-                    ) {
+            previousStatus[0] !==
+            status1.text
 
+        ) {
 
-                        if (
-                            status.text.includes(
-                                "LOW"
-                            )
-                        ) {
+            if (
 
+                previousStatus[0] !== ""
 
-                            speak(
-
-                                "Alert. Tank "
-                                +
-                                tankNumber
-                                +
-                                " water level is low. Current level is "
-                                +
-                                level
-                                +
-                                " percent."
-
-                            );
-
-                        }
-
-                    }
-
-
-                    previousStatus[index] =
-                    status.text;
-
-                }
-
+            ) {
 
                 if (
-                    status.alert
+
+                    status1.text.includes("LOW")
+
                 ) {
 
-                    alerts.push(
+                    speak(
 
-                        "Tank "
+                        "Alert. Tank 1 water level is low. Current level is "
                         +
-                        tankNumber
-                        +
-                        " is critically low at "
-                        +
-                        level
+                        tank1Level.toFixed(1)
                         +
                         " percent."
 
@@ -584,50 +460,136 @@ onValue(
 
             }
 
-        );
 
+            previousStatus[0] =
+            status1.text;
+
+        }
+
+
+        /* ===========================
+           VOICE ALERT - TANK 2
+        =========================== */
 
         if (
-            alerts.length > 0
+
+            previousStatus[1] !==
+            status2.text
+
         ) {
 
-            document
-            .getElementById(
-                "alertBox"
-            )
-            .innerHTML =
+            if (
 
-            "🔔 "
-            +
-            alerts.join(
-                "<br>"
+                previousStatus[1] !== ""
+
+            ) {
+
+                if (
+
+                    status2.text.includes("LOW")
+
+                ) {
+
+                    speak(
+
+                        "Alert. Tank 2 water level is low. Current level is "
+                        +
+                        tank2Level.toFixed(1)
+                        +
+                        " percent."
+
+                    );
+
+                }
+
+            }
+
+
+            previousStatus[1] =
+            status2.text;
+
+        }
+
+
+        /* ===========================
+           ALERT BOX
+        =========================== */
+
+        const alerts = [];
+
+
+        if (status1.alert) {
+
+            alerts.push(
+
+                "Tank 1 is critically low at "
+                +
+                tank1Level.toFixed(1)
+                +
+                "%"
+
             );
 
         }
 
 
-        else {
+        if (status2.alert) {
 
-            document
-            .getElementById(
-                "alertBox"
-            )
-            .innerHTML =
+            alerts.push(
 
-            "🟢 All tanks are operating normally.";
+                "Tank 2 is critically low at "
+                +
+                tank2Level.toFixed(1)
+                +
+                "%"
+
+            );
 
         }
 
 
+        if (alerts.length > 0) {
+
+            document
+            .getElementById("alertBox")
+            .innerHTML =
+
+            "🔔 "
+            +
+            alerts.join("<br>");
+
+        }
+
+        else {
+
+            document
+            .getElementById("alertBox")
+            .innerHTML =
+
+            "🟢 Both tanks are operating normally.";
+
+        }
+
+
+        /* ===========================
+           UPDATE HISTORY CHART
+        =========================== */
+
         addHistory(
-            levels
+
+            tank1Level,
+
+            tank2Level
+
         );
 
 
+        /* ===========================
+           LAST UPDATED
+        =========================== */
+
         document
-        .getElementById(
-            "lastUpdated"
-        )
+        .getElementById("lastUpdated")
         .innerText =
 
         new Date()
@@ -635,15 +597,18 @@ onValue(
 
     },
 
+
+    /* ===============================
+       FIREBASE ERROR
+    ================================ */
+
     (error) => {
 
         console.error(error);
 
 
         document
-        .getElementById(
-            "connectionText"
-        )
+        .getElementById("connectionText")
         .innerText =
         "Firebase Error";
 
