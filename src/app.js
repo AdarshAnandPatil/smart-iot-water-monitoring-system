@@ -19,7 +19,7 @@ import {
 const firebaseConfig = {
 
     apiKey:
-    "PASTE_YOUR_API_KEY_HERE",
+    "AIzaSyDVArU4b5-NiY861C48pK2ioCWxZvn8veY",
 
     authDomain:
     "smart-water-monitoring-s-bad82.firebaseapp.com",
@@ -37,7 +37,7 @@ const firebaseConfig = {
     "236717542324",
 
     appId:
-    "PASTE_YOUR_APP_ID_HERE"
+    "1:236717542324:web:5ce4d5126f26d5cf8400e1"
 
 };
 
