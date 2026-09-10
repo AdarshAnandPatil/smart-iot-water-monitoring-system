@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
     <meta charset="UTF-8">
 
     <meta name="viewport"
@@ -11,19 +13,25 @@
     <link rel="stylesheet" href="style.css">
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
 </head>
 
+
 <body>
+
 
 <header>
 
     <div>
+
         <h1>💧 Smart Water Monitoring System</h1>
 
         <p>
             Real-Time IoT Water Level Monitoring Dashboard
         </p>
+
     </div>
+
 
     <div class="connection">
 
@@ -38,11 +46,18 @@
 </header>
 
 
+
 <main>
 
-    <!-- CONTROL PANEL -->
+
+    <!-- =========================
+         CONTROL PANEL
+    ========================== -->
 
     <section class="controls">
+
+
+        <!-- VOICE -->
 
         <div class="control-card">
 
@@ -55,26 +70,41 @@
         </div>
 
 
+
+        <!-- LAST UPDATED -->
+
         <div class="control-card">
 
             <h3>🕒 Last Updated</h3>
 
             <p id="lastUpdated">
+
                 Waiting for data...
+
             </p>
 
         </div>
 
+
     </section>
 
 
-    <!-- TANKS -->
+
+    <!-- =========================
+         TWO WATER TANKS
+    ========================== -->
 
     <section class="tank-grid">
 
+
+        <!-- TANK 1 -->
+
         <div class="tank-card">
 
-            <h2>Tank 1</h2>
+            <h2>
+                💧 Tank 1
+            </h2>
+
 
             <div class="tank">
 
@@ -89,6 +119,7 @@
 
             </div>
 
+
             <div id="status1"
                  class="status">
 
@@ -99,9 +130,15 @@
         </div>
 
 
+
+        <!-- TANK 2 -->
+
         <div class="tank-card">
 
-            <h2>Tank 2</h2>
+            <h2>
+                💧 Tank 2
+            </h2>
+
 
             <div class="tank">
 
@@ -116,6 +153,7 @@
 
             </div>
 
+
             <div id="status2"
                  class="status">
 
@@ -126,67 +164,20 @@
         </div>
 
 
-        <div class="tank-card">
-
-            <h2>Tank 3</h2>
-
-            <div class="tank">
-
-                <div class="water"
-                     id="water3">
-
-                    <span id="percent3">
-                        0%
-                    </span>
-
-                </div>
-
-            </div>
-
-            <div id="status3"
-                 class="status">
-
-                Waiting...
-
-            </div>
-
-        </div>
-
-
-        <div class="tank-card">
-
-            <h2>Tank 4</h2>
-
-            <div class="tank">
-
-                <div class="water"
-                     id="water4">
-
-                    <span id="percent4">
-                        0%
-                    </span>
-
-                </div>
-
-            </div>
-
-            <div id="status4"
-                 class="status">
-
-                Waiting...
-
-            </div>
-
-        </div>
-
     </section>
 
 
-    <!-- ALERT -->
+
+    <!-- =========================
+         SYSTEM ALERTS
+    ========================== -->
 
     <section class="alert-section">
 
-        <h2>🔔 System Alerts</h2>
+        <h2>
+            🔔 System Alerts
+        </h2>
+
 
         <div id="alertBox">
 
@@ -197,20 +188,30 @@
     </section>
 
 
-    <!-- HISTORY -->
+
+    <!-- =========================
+         WATER LEVEL HISTORY
+    ========================== -->
 
     <section class="chart-section">
 
-        <h2>📈 Water Level History</h2>
+        <h2>
+            📈 Water Level History
+        </h2>
+
 
         <canvas id="waterChart"></canvas>
 
     </section>
 
 
-    <!-- STATUS -->
+
+    <!-- =========================
+         WATER STATUS ZONES
+    ========================== -->
 
     <section class="zones">
+
 
         <div class="danger">
 
@@ -218,9 +219,12 @@
 
             <br>
 
-            0% – 25%
+            <span>
+                0% – 25%
+            </span>
 
         </div>
+
 
 
         <div class="warning">
@@ -229,9 +233,12 @@
 
             <br>
 
-            26% – 60%
+            <span>
+                26% – 60%
+            </span>
 
         </div>
+
 
 
         <div class="safe">
@@ -240,27 +247,40 @@
 
             <br>
 
-            61% – 100%
+            <span>
+                61% – 100%
+            </span>
 
         </div>
 
+
     </section>
+
 
 </main>
 
 
+
 <footer>
 
-    Smart IoT Water Monitoring System
+    <strong>
+        Smart IoT Water Monitoring System
+    </strong>
 
-    <br>
+    <br><br>
 
-    NodeMCU ESP8266 • Firebase • Render
+    Arduino Uno • ESP8266 • Firebase • Render
 
 </footer>
 
 
-<script type="module" src="app.js"></script>
+
+<script type="module"
+        src="app.js">
+
+</script>
+
 
 </body>
+
 </html>
