@@ -1,15 +1,1061 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1.0"><title>Smart Water Monitoring System</title><link rel="stylesheet" href="style.css"><script src="https://cdn.jsdelivr.net/npm/chart.js"></script></head><body>
-<header><div><h1>💧 Smart Water Monitoring System</h1><p>Real-Time IoT Water Level Monitoring Dashboard</p></div><div class="head"><b id="modeBadge">📡 LIVE MODE</b><span><i id="connectionDot"></i><span id="connectionText">Connecting...</span></span></div></header>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+        content="width=device-width, initial-scale=1.0">
+
+    <title>
+        Smart IoT Water Monitoring System
+    </title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js">
+    </script>
+
+</head>
+
+
+<body>
+
+
+<header>
+
+    <div>
+
+        <h1>
+            💧 Smart Water Monitoring System
+        </h1>
+
+        <p>
+            Real-Time IoT Water Level Monitoring Dashboard
+        </p>
+
+    </div>
+
+
+    <div class="connection">
+
+        <span id="connectionDot">
+        </span>
+
+        <span id="connectionText">
+
+            Connecting...
+
+        </span>
+
+    </div>
+
+</header>
+
+
+
 <main>
-<section class="controls"><div class="card"><h3>🔊 Voice Alerts</h3><button id="voiceButton">🔊 Voice ON</button></div><div class="card"><h3>🎮 System Mode</h3><button id="modeButton">Switch to Demo Mode</button><p id="modeHelp">Live data is read from Firebase.</p></div><div class="card"><h3>📡 Sensor Status</h3><p id="sensorOnlineText">⏳ Waiting for sensor...</p><p id="sensorUpdateText">Last update: --</p></div><div class="card"><h3>🕒 Last Updated</h3><p id="lastUpdated">Waiting for data...</p></div></section>
-<section class="tank-grid">
-<div class="tank-card"><h2>💧 Tank 1</h2><div class="tank"><div class="bubble"></div><div class="water" id="water1"><div class="wave"></div><span id="percent1">0%</span></div></div><div id="status1" class="status">Waiting...</div><p id="tankInfo1">Current level: 0%</p><div class="demo"><button class="minus" data-tank="1">−</button>Demo Control<button class="plus" data-tank="1">+</button></div></div>
-<div class="tank-card"><h2>💧 Tank 2</h2><div class="tank"><div class="bubble"></div><div class="water" id="water2"><div class="wave"></div><span id="percent2">0%</span></div></div><div id="status2" class="status">Waiting...</div><p id="tankInfo2">Current level: 0%</p><div class="demo"><button class="minus" data-tank="2">−</button>Demo Control<button class="plus" data-tank="2">+</button></div></div>
-</section>
-<section class="motor"><div><h2>🚰 Automatic Water Pump Control</h2><p id="motorDescription">Automatic mode: Motor ON at ≤25%, OFF at ≥90%.</p></div><div><h3 id="motorStatus">🔴 MOTOR OFF</h3><button id="motorAutoButton">⚙️ AUTO</button><button id="motorOnButton">🟢 Turn ON</button><button id="motorOffButton">🔴 Turn OFF</button><p>For real hardware use a suitable relay. An LED can be used first for demonstration.</p></div></section>
-<section class="card"><h2>🔔 System Alerts</h2><div id="alertBox">No alerts. System is monitoring water levels.</div></section>
-<section class="card"><h2>🔔 Notification History</h2><div id="notificationHistory"><p>No notifications yet.</p></div></section>
-<section class="card"><h2>📡 Equipment Connection Status</h2><div class="devices"><div>Arduino Uno<br><b id="arduinoStatus">🟡 Waiting</b></div><div>ESP8266 Wi-Fi<br><b id="espStatus">🟡 Waiting</b></div><div>Firebase<br><b id="firebaseStatus">🟡 Connecting</b></div><div>Tank 1 Sensor<br><b id="sensor1Status">🟡 Waiting</b></div><div>Tank 2 Sensor<br><b id="sensor2Status">🟡 Waiting</b></div></div></section>
-<section class="card chart"><h2>📈 Water Level History</h2><canvas id="waterChart"></canvas></section>
-<section class="zones"><div class="low">🔴 LOW<br>0%–25%</div><div class="warn">🟡 WARNING<br>26%–60%</div><div class="safe">🟢 SAFE<br>61%–89%</div><div class="overflow">🚨 OVERFLOW RISK<br>90%–100%</div></section>
-</main><footer><b>Smart IoT Water Monitoring System</b><br><br>Arduino Uno • ESP8266 • HC-SR04 × 2 • Buzzer • Firebase • Render</footer><script type="module" src="app.js"></script></body></html>
+
+
+    <!-- LOGIN -->
+
+    <section
+        class="login-section"
+        id="loginSection">
+
+        <div class="login-card">
+
+            <h2>
+                🔐 Admin Login
+            </h2>
+
+            <p>
+                Login to control the motor
+                and change system settings.
+            </p>
+
+
+            <input
+                id="loginUser"
+                placeholder="Username">
+
+
+            <input
+                id="loginPassword"
+                type="password"
+                placeholder="Password">
+
+
+            <button id="loginButton">
+
+                🔐 Login
+
+            </button>
+
+
+            <p id="loginMessage">
+            </p>
+
+
+            <small>
+
+                Demo Login:
+
+                <b>
+                    admin
+                </b>
+
+                /
+
+                <b>
+                    water123
+                </b>
+
+            </small>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- ADMIN BAR -->
+
+    <section
+        class="admin-bar hidden"
+        id="adminBar">
+
+        <span>
+
+            👤 Admin Logged In
+
+        </span>
+
+
+        <button id="logoutButton">
+
+            Logout
+
+        </button>
+
+    </section>
+
+
+
+    <!-- CONTROL PANEL -->
+
+    <section class="controls">
+
+
+        <div class="control-card">
+
+            <h3>
+                🔊 Voice Alerts
+            </h3>
+
+
+            <button id="voiceButton">
+
+                🔊 Voice ON
+
+            </button>
+
+        </div>
+
+
+
+        <div class="control-card">
+
+            <h3>
+                🕒 Last Updated
+            </h3>
+
+
+            <p id="lastUpdated">
+
+                Waiting for data...
+
+            </p>
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- LIVE / DEMO MODE -->
+
+    <section class="mode-section">
+
+        <div class="mode-card">
+
+            <h2 id="modeTitle">
+
+                📡 LIVE MODE
+
+            </h2>
+
+
+            <p id="modeDescription">
+
+                Reading real sensor data
+                from Firebase.
+
+            </p>
+
+
+            <button id="modeButton">
+
+                🎮 Switch to Demo Mode
+
+            </button>
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- SENSOR STATUS -->
+
+    <section class="sensor-section">
+
+        <div class="sensor-card">
+
+            <h2>
+                📡 Sensor Status
+            </h2>
+
+
+            <p id="sensorStatus">
+
+                🟡 Waiting for sensor...
+
+            </p>
+
+
+            <p id="sensorTime">
+
+                Last update:
+                Waiting...
+
+            </p>
+
+        </div>
+
+    </section>
+
+
+
+    <!-- TANKS -->
+
+    <section class="tank-grid">
+
+
+        <!-- TANK 1 -->
+
+        <div class="tank-card">
+
+            <h2>
+                💧 Tank 1
+            </h2>
+
+
+            <div class="tank">
+
+
+                <div
+                    class="water"
+                    id="water1">
+
+
+                    <div class="wave">
+                    </div>
+
+
+                    <div class="bubble bubble1">
+                    </div>
+
+                    <div class="bubble bubble2">
+                    </div>
+
+                    <div class="bubble bubble3">
+                    </div>
+
+
+                    <span id="percent1">
+
+                        0%
+
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <p
+                class="tank-info"
+                id="tankInfo1">
+
+                Current Level: 0%
+
+            </p>
+
+
+            <div
+                id="status1"
+                class="status">
+
+                Waiting...
+
+            </div>
+
+
+            <div class="demo-controls">
+
+
+                <button
+                    class="minus"
+                    data-tank="1">
+
+                    −
+
+                </button>
+
+
+                <span>
+
+                    Demo Control
+
+                </span>
+
+
+                <button
+                    class="plus"
+                    data-tank="1">
+
+                    +
+
+                </button>
+
+
+            </div>
+
+        </div>
+
+
+
+        <!-- TANK 2 -->
+
+        <div class="tank-card">
+
+            <h2>
+                💧 Tank 2
+            </h2>
+
+
+            <div class="tank">
+
+
+                <div
+                    class="water"
+                    id="water2">
+
+
+                    <div class="wave">
+                    </div>
+
+
+                    <div class="bubble bubble1">
+                    </div>
+
+                    <div class="bubble bubble2">
+                    </div>
+
+                    <div class="bubble bubble3">
+                    </div>
+
+
+                    <span id="percent2">
+
+                        0%
+
+                    </span>
+
+                </div>
+
+            </div>
+
+
+            <p
+                class="tank-info"
+                id="tankInfo2">
+
+                Current Level: 0%
+
+            </p>
+
+
+            <div
+                id="status2"
+                class="status">
+
+                Waiting...
+
+            </div>
+
+
+            <div class="demo-controls">
+
+
+                <button
+                    class="minus"
+                    data-tank="2">
+
+                    −
+
+                </button>
+
+
+                <span>
+
+                    Demo Control
+
+                </span>
+
+
+                <button
+                    class="plus"
+                    data-tank="2">
+
+                    +
+
+                </button>
+
+
+            </div>
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- ALERT -->
+
+    <section class="alert-section">
+
+        <h2>
+            🔔 System Alerts
+        </h2>
+
+
+        <div id="alertBox">
+
+            No alerts.
+            System is monitoring water levels.
+
+        </div>
+
+    </section>
+
+
+
+    <!-- NOTIFICATION HISTORY -->
+
+    <section class="history-alert-section">
+
+        <h2>
+            🔔 Alert History
+        </h2>
+
+
+        <div
+            id="notificationHistory"
+            class="notification-history">
+
+            No notifications yet.
+
+        </div>
+
+    </section>
+
+
+
+    <!-- POWER STATUS -->
+
+    <section class="power-grid">
+
+
+        <div class="power-card">
+
+            <h2>
+                🔋 Power Status
+            </h2>
+
+
+            <p id="mainPower">
+
+                🔌 Main Power:
+                🟢 ON
+
+            </p>
+
+
+            <p id="backupPower">
+
+                🔋 Backup Power:
+                🟢 Available
+
+            </p>
+
+
+            <p class="small-text">
+
+                Can later be connected
+                to Arduino hardware.
+
+            </p>
+
+        </div>
+
+
+
+        <!-- MOBILE NOTIFICATION -->
+
+        <div class="power-card">
+
+            <h2>
+                📱 Mobile Notifications
+            </h2>
+
+
+            <p id="notificationPermission">
+
+                🔔 Notifications not enabled
+
+            </p>
+
+
+            <button
+                id="enableNotificationButton">
+
+                🔔 Enable Notifications
+
+            </button>
+
+
+            <p class="small-text">
+
+                Alerts for low water,
+                overflow and sensor offline.
+
+            </p>
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- EQUIPMENT STATUS -->
+
+    <section class="equipment-section">
+
+        <h2>
+            📡 Equipment Connection Status
+        </h2>
+
+
+        <div class="equipment-grid">
+
+
+            <div class="equipment">
+
+                <span>
+                    Arduino Uno
+                </span>
+
+                <span id="arduinoStatus">
+
+                    🟡 Waiting
+
+                </span>
+
+            </div>
+
+
+
+            <div class="equipment">
+
+                <span>
+                    ESP8266
+                </span>
+
+                <span id="espStatus">
+
+                    🟡 Waiting
+
+                </span>
+
+            </div>
+
+
+
+            <div class="equipment">
+
+                <span>
+                    Firebase
+                </span>
+
+                <span id="firebaseStatus">
+
+                    🟡 Connecting
+
+                </span>
+
+            </div>
+
+
+
+            <div class="equipment">
+
+                <span>
+                    Tank 1 Sensor
+                </span>
+
+                <span id="sensor1Status">
+
+                    🟡 Waiting
+
+                </span>
+
+            </div>
+
+
+
+            <div class="equipment">
+
+                <span>
+                    Tank 2 Sensor
+                </span>
+
+                <span id="sensor2Status">
+
+                    🟡 Waiting
+
+                </span>
+
+            </div>
+
+
+        </div>
+
+    </section>
+
+
+
+    <!-- TANK SETTINGS -->
+
+    <section class="settings-section">
+
+
+        <h2>
+
+            ⚙️ Tank Settings
+
+        </h2>
+
+
+        <p>
+
+            🔐 Admin login required
+            to save settings.
+
+        </p>
+
+
+        <div class="settings-grid">
+
+
+            <div>
+
+                <label>
+
+                    🔴 Low Level Alert (%)
+
+                </label>
+
+
+                <input
+                    id="lowThreshold"
+                    type="number"
+                    value="25">
+
+            </div>
+
+
+
+            <div>
+
+                <label>
+
+                    🟡 Warning Level (%)
+
+                </label>
+
+
+                <input
+                    id="warningThreshold"
+                    type="number"
+                    value="60">
+
+            </div>
+
+
+
+            <div>
+
+                <label>
+
+                    🚰 Motor OFF Level (%)
+
+                </label>
+
+
+                <input
+                    id="motorOffThreshold"
+                    type="number"
+                    value="90">
+
+            </div>
+
+
+
+            <div>
+
+                <label>
+
+                    📏 Tank Height (cm)
+
+                </label>
+
+
+                <input
+                    id="tankHeight"
+                    type="number"
+                    value="100">
+
+            </div>
+
+
+        </div>
+
+
+        <button id="saveSettingsButton">
+
+            💾 Save Settings
+
+        </button>
+
+
+        <p id="settingsMessage">
+        </p>
+
+
+    </section>
+
+
+
+    <!-- MOTOR CONTROL -->
+
+    <section class="motor-section">
+
+
+        <h2>
+
+            🚰 Automatic Water Pump Control
+
+        </h2>
+
+
+        <div
+            id="motorStatus"
+            class="motor-status">
+
+            🔴 MOTOR OFF
+
+        </div>
+
+
+        <p id="motorDescription">
+
+            Automatic mode:
+            Motor control based on water level.
+
+        </p>
+
+
+        <div class="motor-buttons">
+
+
+            <button
+                id="motorAutoButton">
+
+                ⚙️ AUTO
+
+            </button>
+
+
+            <button
+                id="motorOnButton">
+
+                🟢 Turn ON
+
+            </button>
+
+
+            <button
+                id="motorOffButton">
+
+                🔴 Turn OFF
+
+            </button>
+
+
+        </div>
+
+
+        <p class="small-text">
+
+            For real hardware,
+            use a suitable relay.
+            LED can be used first
+            for demonstration.
+
+        </p>
+
+    </section>
+
+
+
+    <!-- ANALYTICS -->
+
+    <section class="analytics-section">
+
+
+        <div class="analytics-card">
+
+
+            <h2>
+
+                📊 Water Analytics
+
+            </h2>
+
+
+            <p id="averageLevel">
+
+                📊 Average Level: --
+
+            </p>
+
+
+            <p id="highestLevel">
+
+                ⬆️ Highest: --
+
+            </p>
+
+
+            <p id="lowestLevel">
+
+                ⬇️ Lowest: --
+
+            </p>
+
+
+            <p id="usageEstimate">
+
+                💧 Estimated Change: --
+
+            </p>
+
+
+        </div>
+
+
+
+        <!-- RECOMMENDATION -->
+
+        <div class="analytics-card">
+
+
+            <h2>
+
+                💡 Smart Water Saving Recommendation
+
+            </h2>
+
+
+            <div id="recommendationBox">
+
+                Collecting water-level
+                history...
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- REPORT -->
+
+    <section class="report-section">
+
+
+        <h2>
+
+            📥 Download Water Report
+
+        </h2>
+
+
+        <p>
+
+            Download current water levels,
+            history, alerts,
+            analytics and settings.
+
+        </p>
+
+
+        <button id="downloadReportButton">
+
+            📥 Download Report
+
+        </button>
+
+
+    </section>
+
+
+
+    <!-- WATER HISTORY -->
+
+    <section class="chart-section">
+
+
+        <h2>
+
+            📈 Water Level History
+
+        </h2>
+
+
+        <div class="chart-container">
+
+            <canvas
+                id="waterChart">
+
+            </canvas>
+
+        </div>
+
+
+    </section>
+
+
+
+    <!-- STATUS LEGEND -->
+
+    <section class="zones">
+
+
+        <div class="danger">
+
+            🔴 LOW
+
+            <br>
+
+            0% – 25%
+
+        </div>
+
+
+
+        <div class="warning">
+
+            🟡 WARNING
+
+            <br>
+
+            26% – 60%
+
+        </div>
+
+
+
+        <div class="safe">
+
+            🟢 SAFE
+
+            <br>
+
+            61% – 89%
+
+        </div>
+
+
+
+        <div class="overflow">
+
+            🚨 OVERFLOW
+
+            <br>
+
+            90% – 100%
+
+        </div>
+
+
+    </section>
+
+
+</main>
+
+
+
+<footer>
+
+    💧 Smart IoT Water Monitoring System
+
+    <br>
+
+    Arduino Uno • ESP8266 •
+    Firebase • Render
+
+</footer>
+
+
+
+<script
+    type="module"
+    src="app.js">
+
+</script>
+
+
+</body>
+
+</html>
